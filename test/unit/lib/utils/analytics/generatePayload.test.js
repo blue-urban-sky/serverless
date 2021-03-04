@@ -2,7 +2,8 @@
 
 const { expect } = require('chai');
 const path = require('path');
-const fse = require('fs-extra');
+const fs = require('fs');
+const os = require('os');
 
 const generatePayload = require('../../../../../lib/utils/analytics/generatePayload');
 const runServerless = require('../../../../utils/run-serverless');
@@ -16,7 +17,7 @@ const versions = {
 describe('lib/utils/analytics/generatePayload', () => {
   it('Should resolve payload for AWS service', async () => {
     const { servicePath } = await fixtures.setup('httpApi');
-    await fse.writeFile(
+    await fs.promises.writeFile(
       path.resolve(servicePath, 'package.json'),
       JSON.stringify({
         dependencies: {
@@ -39,6 +40,14 @@ describe('lib/utils/analytics/generatePayload', () => {
       cliArgs: ['-v'],
     });
     const payload = await generatePayload(serverless);
+    expect(payload).to.have.property('frameworkId');
+    delete payload.frameworkId;
+    expect(payload).to.have.property('createdAt');
+    delete payload.createdAt;
+    expect(payload).to.have.property('orgUid');
+    delete payload.orgUid;
+    expect(payload).to.have.property('timezone');
+    delete payload.timezone;
     expect(payload).to.deep.equal({
       cliName: 'serverless',
       config: {
@@ -61,6 +70,8 @@ describe('lib/utils/analytics/generatePayload', () => {
       installationType: 'global:other',
       isDashboardEnabled: false,
       versions,
+      userId: null,
+      ciName: null,
     });
   });
 
@@ -70,6 +81,14 @@ describe('lib/utils/analytics/generatePayload', () => {
       cliArgs: ['config'],
     });
     const payload = await generatePayload(serverless);
+    expect(payload).to.have.property('frameworkId');
+    delete payload.frameworkId;
+    expect(payload).to.have.property('createdAt');
+    delete payload.createdAt;
+    expect(payload).to.have.property('orgUid');
+    delete payload.orgUid;
+    expect(payload).to.have.property('timezone');
+    delete payload.timezone;
     expect(payload).to.deep.equal({
       cliName: 'serverless',
       config: {
@@ -92,6 +111,8 @@ describe('lib/utils/analytics/generatePayload', () => {
       installationType: 'global:other',
       isDashboardEnabled: false,
       versions,
+      userId: null,
+      ciName: null,
     });
   });
 
@@ -102,6 +123,14 @@ describe('lib/utils/analytics/generatePayload', () => {
       modulesCacheStub: {},
     });
     const payload = await generatePayload(serverless);
+    expect(payload).to.have.property('frameworkId');
+    delete payload.frameworkId;
+    expect(payload).to.have.property('createdAt');
+    delete payload.createdAt;
+    expect(payload).to.have.property('orgUid');
+    delete payload.orgUid;
+    expect(payload).to.have.property('timezone');
+    delete payload.timezone;
     expect(payload).to.deep.equal({
       cliName: 'serverless',
       config: {
@@ -121,6 +150,27 @@ describe('lib/utils/analytics/generatePayload', () => {
       installationType: 'local:fallback',
       isDashboardEnabled: false,
       versions,
+      userId: null,
+      ciName: null,
     });
+  });
+
+  it('Should resolve payload with predefined local config', async () => {
+    const { serverless } = await runServerless({
+      fixture: 'customProvider',
+      cliArgs: ['config'],
+    });
+
+    await fs.promises.writeFile(
+      path.resolve(os.homedir(), '.serverlessrc'),
+      JSON.stringify({
+        frameworkId: '123',
+        userId: 'some-user-id',
+      })
+    );
+
+    const payload = await generatePayload(serverless);
+    expect(payload.userId).to.equal('some-user-id');
+    expect(payload.frameworkId).to.equal('123');
   });
 });
