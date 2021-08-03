@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Sample Kubeless Python serverless framework service.",
   "dependencies": {
-    "serverless-kubeless": "^0.4.0"
+    "serverless-kubeless": "^0.11.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
