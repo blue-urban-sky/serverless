@@ -22,7 +22,7 @@
     "sls": "./bin/serverless.js"
   },
   "dependencies": {
-    "@serverless/cli": "^1.5.2",
+    "@serverless/cli": "^2.0.21",
     "@serverless/components": "^3.7.2",
     "@serverless/enterprise-plugin": "^4.4.3",
     "@serverless/utils": "^3.1.0",
