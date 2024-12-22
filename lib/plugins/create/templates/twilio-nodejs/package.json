@@ -10,7 +10,7 @@
     "serverless"
   ],
   "dependencies": {
-    "@twilio-labs/serverless-twilio-runtime": "^1.0.0"
+    "@twilio-labs/serverless-twilio-runtime": "^2.0.2"
   },
   "devDependencies": {}
 }
