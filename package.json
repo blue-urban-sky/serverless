@@ -65,7 +65,7 @@
     "replaceall": "^0.1.6",
     "semver": "^7.3.4",
     "tabtab": "^3.0.2",
-    "tar": "^6.1.0",
+    "tar": "^7.5.4",
     "timers-ext": "^0.1.7",
     "type": "^2.3.0",
     "untildify": "^4.0.0",
